@@ -1,5 +1,37 @@
-# Terraform-google-vpc
-# Terraform Google Cloud VPC Module
+<p align="center"> <img src="https://user-images.githubusercontent.com/50652676/62349836-882fef80-b51e-11e9-99e3-7b974309c7e3.png" width="100" height="100"></p>
+
+
+<h1 align="center">
+    Terraform google network
+</h1>
+
+<p align="center" style="font-size: 1.2rem;">
+    Terraform module to create network resource on google.
+     </p>
+
+<p align="center">
+
+<a href="https://www.terraform.io">
+  <img src="https://img.shields.io/badge/Terraform-v1.7.4-green" alt="Terraform">
+</a>
+<a href="https://github.com/slovink/terraform-google-network/blob/main/LICENSE">
+  <img src="https://img.shields.io/badge/License-APACHE-blue.svg" alt="Licence">
+</a>
+
+
+
+</p>
+<p align="center">
+
+<a href='https://www.facebook.com/Slovink.in=https://github.com/slovink/terraform-lables'>
+  <img title="Share on Facebook" src="https://user-images.githubusercontent.com/50652676/62817743-4f64cb80-bb59-11e9-90c7-b057252ded50.png" />
+</a>
+<a href='https://www.linkedin.com/company/101534993/admin/feed/posts/=https://github.com/slovink/terraform-lables'>
+  <img title="Share on LinkedIn" src="https://user-images.githubusercontent.com/50652676/62817742-4e339e80-bb59-11e9-87b9-a1f68cae1049.png" />
+</a>
+
+# Terraform-google-network
+# Terraform Google Cloud network Module
 
 This Terraform module provisions a Google Cloud VPC with customizable options.
 
@@ -47,14 +79,14 @@ Replace **MIT** and **slovink** with the appropriate license and your informatio
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.6.6 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | >= 3.50, < 5.14.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.7.4 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | >= 3.50, < 5.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | >= 3.50, < 5.14.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | >= 3.50, < 5.0 |
 
 ## Modules
 
