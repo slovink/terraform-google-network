@@ -92,7 +92,7 @@ Replace **MIT** and **slovink** with the appropriate license and your informatio
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_labels"></a> [labels](#module\_labels) | git::https://github.com/slovink/terraform-google-labels.git | v1.0.2 |
+| <a name="module_labels"></a> [labels](#module\_labels) | git::https://github.com/slovink/terraform-google-labels.git | v1.0.0 |
 
 ## Resources
 
