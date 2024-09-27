@@ -8,6 +8,8 @@ module "labels" {
   label_order = var.label_order
   managedby   = var.managedby
   repository  = var.repository
+  extra_tags  = var.extra_tags
+
 }
 
 resource "google_compute_network" "vpc" {

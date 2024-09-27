@@ -15,6 +15,11 @@ variable "label_order" {
   default     = ["name", "environment"]
   description = "Label order, e.g. `name`,`application`."
 }
+variable "extra_tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
+}
 
 variable "managedby" {
   type        = string
