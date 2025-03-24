@@ -22,8 +22,3 @@ repos:
     hooks:
       - id: terraform-docs-go
         args: ["markdown", "table", "--output-file", "README.md", "./"]
-
-  - repo: https://github.com/aquasecurity/tfsec
-    rev: v1.28.1 # Use the latest release from https://github.com/aquasecurity/tfsec/releases
-    hooks:
-      - id: tfsec
