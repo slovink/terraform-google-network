@@ -10,7 +10,6 @@ trigger:
 - main
 
 variables:
-- group: Slovink_secrets
 - name: gcp_bucket
   value: slovink-hyperscaler
 - name: terraformVersion
