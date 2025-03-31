@@ -47,11 +47,12 @@ stages:
           - script:
               rm -rf *
 
-          - script: |
-              sudo ln -sf /bin/terraform /usr/local/bin/terraform
-              export PATH=$PATH:/bin:/usr/local/bin
-              terraform version
-              displayName: "Fix Terraform Path"
+          # - script: 
+          #     sudo mv terraform /usr/local/bin/
+              # sudo ln -sf /bin/terraform /usr/local/bin/terraform
+              # export PATH=$PATH:/bin:/usr/local/bin
+              # terraform version
+              # displayName: "Fix Terraform Path"
           - task: DownloadSecureFile@1
             name: development
             displayName: 'get GCP Secrets '
@@ -79,7 +80,7 @@ stages:
             displayName: 'Terraform Plan'
             inputs:
               command: plan
-              workingDirectory: $(System.DefaultWorkingDirectory)/exmple
+              workingDirectory: $(System.DefaultWorkingDirectory)/example
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
               providerGoogleCredentials: $(AuthenticationFileName)
               # The default project name where resources are managed. Defining project on a resource takes precedence over this.
