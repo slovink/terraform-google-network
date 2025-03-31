@@ -1,13 +1,13 @@
 provider "google" {
-  project = "testing-gcp-ops"
+  project = "slovink-hyperscaler"
   region  = "asia-northeast1"
   zone    = "asia-northeast1-a"
 }
 
 
 module "vpc" {
-  source                                    = "../"
-  name                                      = "ops"
+  source                                    = "../."
+  name                                      = "app"
   environment                               = "test"
   routing_mode                              = "REGIONAL"
   mtu                                       = 1460
