@@ -80,6 +80,8 @@ stages:
             displayName: 'Terraform Plan'
             inputs:
               command: plan
+          - script: 
+              sudo mv terraform /usr/local/bin/
               workingDirectory: $(System.DefaultWorkingDirectory)/example
               # backendGcsCredentials: /usr/local/bin/terraform
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
