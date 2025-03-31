@@ -45,6 +45,11 @@ stages:
               terraformVersion: $(terraformVersion)
           - script:
               rm -rf *
+          - script: |
+              echo "##vso[task.prependpath]/bin"
+              which terraform
+              terraform version
+            displayName: Fix Terraform Path
           - task: DownloadSecureFile@1
             name: development
             displayName: 'get GCP Secrets '
