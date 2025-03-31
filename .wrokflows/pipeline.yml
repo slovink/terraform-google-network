@@ -81,6 +81,7 @@ stages:
             inputs:
               command: plan
               workingDirectory: $(System.DefaultWorkingDirectory)/example
+              backendGcsCredentials: /usr/local/bin/terraform
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
               providerGoogleCredentials: $(AuthenticationFileName)
               # The default project name where resources are managed. Defining project on a resource takes precedence over this.
