@@ -49,10 +49,9 @@ stages:
 
           - script: |
               sudo ln -sf /bin/terraform /usr/local/bin/terraform
-              export PATH=$PATH:/bin
+              export PATH=$PATH:/bin:/usr/local/bin
               terraform version
               displayName: "Fix Terraform Path"
-
           - task: DownloadSecureFile@1
             name: development
             displayName: 'get GCP Secrets '
