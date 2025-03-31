@@ -48,11 +48,17 @@ stages:
               rm -rf *
 
           - script: 
-              sudo mv terraform /usr/local/bin/
+              echo "Installing Terraform..."
+              curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+              sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+              sudo apt-get update && sudo apt-get install terraform -y
+              terraform version
+              displayName: "Manually Install Terraform" 
+              # sudo mv terraform /usr/local/bin/
               # sudo ln -sf /bin/terraform /usr/local/bin/terraform
               # export PATH=$PATH:/bin:/usr/local/bin
               # terraform version
-              displayName: "Fix Terraform Path"
+              # displayName: "Fix Terraform Path"
           - task: DownloadSecureFile@1
             name: development
             displayName: 'get GCP Secrets '
@@ -81,7 +87,7 @@ stages:
             inputs:
               command: plan
           - script: 
-              sudo mv terraform /usr/local/bin/
+              # sudo mv terraform /usr/local/bin/
               workingDirectory: $(System.DefaultWorkingDirectory)/example
               # backendGcsCredentials: /usr/local/bin/terraform
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
