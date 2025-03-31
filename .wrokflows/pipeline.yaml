@@ -45,11 +45,9 @@ stages:
               terraformVersion: $(terraformVersion)
           - script:
               rm -rf *
-          - script: |
-              echo "##vso[task.prependpath]/bin"
-              which terraform
-              terraform version
-            displayName: Fix Terraform Path
+          - script:
+              sudo ln -s /bin/terraform /usr/local/bin/terraform
+            displayName: Create symlink
           - task: DownloadSecureFile@1
             name: development
             displayName: 'get GCP Secrets '
