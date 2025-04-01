@@ -1,3 +1,4 @@
+
 parameters:
   - name: agentPool
     type: string
@@ -13,7 +14,7 @@ variables:
   - name: gcp_bucket
     value: slovink-hyperscaler
   - name: terraformVersion
-    value : 1.5.4
+    value : 1.9.5
   - name: authenticationFileName
     value: slovink-hyperscaler.json
   - name: projectName
@@ -42,14 +43,22 @@ stages:
           - task: TerraformInstaller@1
             displayName: install terraform
             inputs:
-              terraformVersion: $(terraformVersion)
+              terraformVersion: latest
           - script:
               rm -rf *
+
           - script:
-              sudo mv terraform /usr/local/bin/
-              sudo ln -sf /usr/local/bin/terraform /usr/bin/terraform
-              which terraform
-            displayName: Create symlink
+              echo "Installing Terraform..."
+              curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+              sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+              sudo apt-get update && sudo apt-get install terraform -y
+              terraform version
+              displayName: "Manually Install Terraform"
+              # sudo mv terraform /usr/local/bin/
+              # sudo ln -sf /bin/terraform /usr/local/bin/terraform
+              # export PATH=$PATH:/bin:/usr/local/bin
+              # terraform version
+              # displayName: "Fix Terraform Path"
           - task: DownloadSecureFile@1
             name: development
             displayName: 'get GCP Secrets '
@@ -77,7 +86,10 @@ stages:
             displayName: 'Terraform Plan'
             inputs:
               command: plan
-              workingDirectory: $(System.DefaultWorkingDirectory)/exmple
+          - script:
+              # sudo mv terraform /usr/local/bin/
+              workingDirectory: $(System.DefaultWorkingDirectory)/example
+              # backendGcsCredentials: /usr/local/bin/terraform
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
               providerGoogleCredentials: $(AuthenticationFileName)
               # The default project name where resources are managed. Defining project on a resource takes precedence over this.
