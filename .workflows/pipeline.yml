@@ -1,4 +1,3 @@
-
 parameters:
   - name: agentPool
     type: string
@@ -8,29 +7,29 @@ parameters:
       - "Slovink-Selfhosted-Agent"
 
 trigger:
-  - main
+- main
 
 variables:
-  - name: gcp_bucket
-    value: slovink-hyperscaler
-  - name: terraformVersion
-    value : 1.9.5
-  - name: authenticationFileName
-    value: slovink-hyperscaler.json
-  - name: projectName
-    value: "Slovink hyperscaler"
-  - name: projectId
-    value: "slovink-hyperscaler"
-  - name: platformName
-    value: "google"
-  - name: environment
-    value: "development"
-  - name: region
-    value: "us-east1"
-  - name: zone
-    value: "us-east1-b"
-  - name: agentPoolName
-    value:  ${{ parameters.agentPool }}
+- name: gcp_bucket
+  value: slovink-hyperscaler
+- name: terraformVersion
+  value : 1.5.4
+- name: authenticationFileName
+  value: slovink-hyperscaler.json
+- name: projectName
+  value: "Slovink hyperscaler"
+- name: projectId
+  value: "slovink-hyperscaler"
+- name: platformName
+  value: "google"
+- name: environment
+  value: "development"
+- name: region
+  value: "us-east1"
+- name: zone
+  value: "us-east1-b"
+- name: agentPoolName
+  value:  ${{ parameters.agentPool }}
 pool:
   name: $(agentPoolName)
 
@@ -38,74 +37,58 @@ stages:
   - stage: Prepare
     displayName: Initialization
     jobs:
-      - job: prepare
-        steps:
-          - task: TerraformInstaller@1
-            displayName: install terraform
-            inputs:
-              terraformVersion: latest
-          - script:
-              rm -rf *
-
-          - script:
-              # echo "Installing Terraform..."
-              # curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-              # sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-              # sudo apt-get update && sudo apt-get install terraform -y
-              # terraform version
-              # displayName: "Manually Install Terraform"
-              sudo mv terraform /usr/local/bin/
-              sudo ln -sf /bin/terraform /usr/local/bin/terraform
-              export PATH=$PATH:/bin:/usr/local/bin
-              terraform version
-              displayName: "Fix Terraform Path"
-          - task: DownloadSecureFile@1
-            name: development
-            displayName: 'get GCP Secrets '
-            inputs:
-              secureFile: $(authenticationFileName)
-          - script: |
-              cp $(development.secureFilePath) .
+    - job: prepare
+      steps:
+      - task: TerraformInstaller@1
+        displayName: install terraform
+        inputs:
+          terraformVersion: latest
+      - script:
+          rm -rf *
+      - task: DownloadSecureFile@1
+        name: development
+        displayName: 'get GCP Secrets '
+        inputs:
+           secureFile: $(authenticationFileName)
+      - script: |
+          cp $(development.secureFilePath) .
 
   - stage: Network
     dependsOn: Prepare
     displayName: Network
     jobs:
-      - job: Network
-        steps:
-          - task: TerraformCLI@0
-            displayName: Terraform Initialize
-            inputs:
-              command: init
-              workingDirectory: $(System.DefaultWorkingDirectory)/example
-              backendType: gcs
-              backendGcsCredentials: $(AuthenticationFileName)
-              backendGcsBucket: $(gcp_bucket)
-              backendGcsPrefix: $(ProjectId)/$(PlatformName)/network.infrax.tfstate
-          - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-            displayName: 'Terraform Plan'
-            inputs:
-              command: plan
-          - script:
-              # sudo mv terraform /usr/local/bin/
-              workingDirectory: $(System.DefaultWorkingDirectory)/example
-              # backendGcsCredentials: /usr/local/bin/terraform
-              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-              providerGoogleCredentials: $(AuthenticationFileName)
-              # The default project name where resources are managed. Defining project on a resource takes precedence over this.
-              providerGoogleProject: $(ProjectName)
-              # The default region where resources are managed. Defining region on a resource takes precedence over this.
-              providerGoogleRegion: $(Region)
-              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
-          - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-            displayName: 'terraform Apply'
-            inputs:
-              command: apply
-              workingDirectory: $(System.DefaultWorkingDirectory)/example
-              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-              providerGoogleCredentials: $(AuthenticationFileName)
-              # The default project name where resources are managed. Defining project on a resource takes precedence over this.
-              providerGoogleProject: $(ProjectName)
-              # The default region where resources are managed. Defining region on a resource takes precedence over this.
-              providerGoogleRegion: $(Region)
-              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
+    - job: Network
+      steps:
+      - task: TerraformCLI@0
+        displayName: Terraform Initialize
+        inputs:
+          command: init
+          workingDirectory: $(System.DefaultWorkingDirectory)/example
+          backendType: gcs
+          backendGcsCredentials: $(AuthenticationFileName)
+          backendGcsBucket: $(gcp_bucket)
+          backendGcsPrefix: $(ProjectId)/$(PlatformName)/network.infrax.tfstate
+      - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+        displayName: 'Terraform Plan'
+        inputs:
+          command: plan
+          workingDirectory: $(System.DefaultWorkingDirectory)/exmple
+          # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+          providerGoogleCredentials: $(AuthenticationFileName)
+          # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+          providerGoogleProject: $(ProjectName)
+          # The default region where resources are managed. Defining region on a resource takes precedence over this.
+          providerGoogleRegion: $(Region)
+          commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
+      - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+        displayName: 'terraform Apply'
+        inputs:
+          command: apply
+          workingDirectory: $(System.DefaultWorkingDirectory)/example
+          # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+          providerGoogleCredentials: $(AuthenticationFileName)
+          # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+          providerGoogleProject: $(ProjectName)
+          # The default region where resources are managed. Defining region on a resource takes precedence over this.
+          providerGoogleRegion: $(Region)
+          commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
