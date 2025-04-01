@@ -2,12 +2,13 @@ data "google_client_config" "current" {
 }
 
 module "labels" {
-  source      = "git::https://github.com/slovink/terraform-google-labels.git?ref=v1.0.0"
+  source      = "git::https://github.com/slovink/terraform-google-labels.git?ref=add-precommit-136"
   name        = var.name
   environment = var.environment
   label_order = var.label_order
   managedby   = var.managedby
   repository  = var.repository
+  extra_tags  = var.extra_tags
 }
 
 resource "google_compute_network" "vpc" {
