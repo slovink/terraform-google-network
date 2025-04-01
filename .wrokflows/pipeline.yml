@@ -44,10 +44,7 @@ stages:
             displayName: install terraform
             inputs:
               terraformVersion: latest
-          - script: |
-              echo "Listing Installed Tools:"
-              ls -R $(Agent.ToolsDirectory) | grep terraform || echo "Terraform not found"
-            displayName: "Debug Terraform Path"
+
           - script:
               rm -rf *
           - task: DownloadSecureFile@1
@@ -70,16 +67,16 @@ stages:
               command: init
               workingDirectory: $(System.DefaultWorkingDirectory)/example
               backendType: gcs
-              backendGcsCredentials: $(AuthenticationFileName)
+              backendGcsCredentials: $(authenticationFileName)
               backendGcsBucket: $(gcp_bucket)
               backendGcsPrefix: $(ProjectId)/$(PlatformName)/network.infrax.tfstate
           - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
             displayName: 'Terraform Plan'
             inputs:
               command: plan
-              workingDirectory: $(System.DefaultWorkingDirectory)/exmple
+              workingDirectory: $(System.DefaultWorkingDirectory)/example
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-              providerGoogleCredentials: $(AuthenticationFileName)
+              providerGoogleCredentials: $(authenticationFileName)
               # The default project name where resources are managed. Defining project on a resource takes precedence over this.
               providerGoogleProject: $(ProjectName)
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
@@ -91,7 +88,7 @@ stages:
               command: apply
               workingDirectory: $(System.DefaultWorkingDirectory)/example
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-              providerGoogleCredentials: $(AuthenticationFileName)
+              providerGoogleCredentials: $(authenticationFileName)
               # The default project name where resources are managed. Defining project on a resource takes precedence over this.
               providerGoogleProject: $(ProjectName)
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
