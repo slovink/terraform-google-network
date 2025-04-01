@@ -48,17 +48,17 @@ stages:
               rm -rf *
 
           - script:
-              echo "Installing Terraform..."
-              curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-              sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-              sudo apt-get update && sudo apt-get install terraform -y
-              terraform version
-              displayName: "Manually Install Terraform"
-              # sudo mv terraform /usr/local/bin/
-              # sudo ln -sf /bin/terraform /usr/local/bin/terraform
-              # export PATH=$PATH:/bin:/usr/local/bin
+              # echo "Installing Terraform..."
+              # curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+              # sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+              # sudo apt-get update && sudo apt-get install terraform -y
               # terraform version
-              # displayName: "Fix Terraform Path"
+              # displayName: "Manually Install Terraform"
+              sudo mv terraform /usr/local/bin/
+              sudo ln -sf /bin/terraform /usr/local/bin/terraform
+              export PATH=$PATH:/bin:/usr/local/bin
+              terraform version
+              displayName: "Fix Terraform Path"
           - task: DownloadSecureFile@1
             name: development
             displayName: 'get GCP Secrets '
