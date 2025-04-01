@@ -45,10 +45,9 @@ stages:
             inputs:
               terraformVersion: latest
           - script: |
-              echo "Terraform Installed Version:"
-              $(Agent.ToolsDirectory)/terraform/bin/terraform version
-              displayName: "Check Terraform Version"
-
+              echo "Listing Installed Tools:"
+              ls -R $(Agent.ToolsDirectory) | grep terraform || echo "Terraform not found"
+            displayName: "Debug Terraform Path"
           - script:
               rm -rf *
           - task: DownloadSecureFile@1
