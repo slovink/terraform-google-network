@@ -43,8 +43,8 @@ stages:
         displayName: install terraform
         inputs:
           terraformVersion: latest
-      # - script:
-      #     rm -rf *
+      - script:
+          rm -rf *
       - task: DownloadSecureFile@1
         name: development
         displayName: 'get GCP Secrets '
