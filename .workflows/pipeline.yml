@@ -33,6 +33,7 @@ variables:
 pool:
   name: $(agentPoolName)
 
+
 stages:
   - stage: Prepare
     displayName: Initialization
