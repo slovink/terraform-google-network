@@ -64,9 +64,10 @@ stages:
                 secureFile: $(terraformVarsFile)
 
           - script: |
-              mkdir -p $(System.DefaultWorkingDirectory)/example
-              cp $(terraformvars.secureFilePath) $(System.DefaultWorkingDirectory)/example/terraform.tfvars
-            displayName: 'Move terraform.tfvars to example folder'
+              echo "Checking terraform.tfvars file..."
+              ls -lah $(System.DefaultWorkingDirectory)/
+              ls -lah $(System.DefaultWorkingDirectory)/example/
+            displayName: 'Debug: Check terraform.tfvars location'
 
   - stage: Network
     dependsOn: Prepare
@@ -94,7 +95,7 @@ stages:
               providerGoogleProject: $(ProjectName)
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: $(Region)
-              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
+              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/example/terraform.tfvars"'
           - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
             displayName: 'terraform Apply'
             inputs:
@@ -106,4 +107,4 @@ stages:
               providerGoogleProject: $(ProjectName)
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: $(Region)
-              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
+              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/example/terraform.tfvars"'
