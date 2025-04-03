@@ -57,22 +57,7 @@ stages:
               cp $(development.secureFilePath) .
             displayName: 'Copy GCP Secret'
 
-          - task: DownloadSecureFile@1
-            name: terraformvars
-            displayName: 'Download terraform.tfvars'
-            inputs:
-                secureFile: $(terraformVarsFile)
 
-          - script: |
-             echo "Moving terraform.tfvars to correct location..."
-             if [ -f "$(System.DefaultWorkingDirectory)/example/terraform.tfvars" ]; then
-               cp $(System.DefaultWorkingDirectory)/example/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform.tfvars
-             else
-               echo "ERROR: terraform.tfvars file is missing!"
-               exit 1
-              fi
-              ls -lah $(System.DefaultWorkingDirectory)
-            displayName: 'Fix: Move terraform.tfvars'
 
   - stage: Network
     dependsOn: Prepare
@@ -100,7 +85,7 @@ stages:
               providerGoogleProject: $(ProjectName)
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: $(Region)
-              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
+              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/example/terraform.tfvars"'
           - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
             displayName: 'terraform Apply'
             inputs:
@@ -112,4 +97,4 @@ stages:
               providerGoogleProject: $(ProjectName)
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: $(Region)
-              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
+              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/example/terraform.tfvars"'
