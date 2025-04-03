@@ -72,8 +72,6 @@ stages:
       - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
         displayName: 'Terraform Plan'
         inputs:
-        - script: ls -lah /home/vsts/work/1/s/
-          displayName: "List workspace files"
           command: plan
           workingDirectory: $(System.DefaultWorkingDirectory)/example
           # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
