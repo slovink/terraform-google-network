@@ -1,0 +1,5 @@
+network_name = "my-vpc-network"
+subnet_name  = "my-subnet"
+region       = "us-east1"
+project_id   = "slovink-hyperscaler"
+gcp_bucket   = "slovink-hyperscaler"
