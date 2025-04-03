@@ -43,7 +43,7 @@ stages:
           - task: TerraformInstaller@1
             displayName: install terraform
             inputs:
-              terraformVersion: latest
+              terraformVersion: 1.11.3
           - script:
               rm -rf *
             displayName: Cleanup Workspace
@@ -64,9 +64,14 @@ stages:
                 secureFile: $(terraformVarsFile)
 
           - script: |
-              echo "Moving terraform.tfvars to correct location..."
-              cp $(System.DefaultWorkingDirectory)/example/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform.tfvars
-              ls -lah $(System.DefaultWorkingDirectory)/
+             echo "Moving terraform.tfvars to correct location..."
+             if [ -f "$(System.DefaultWorkingDirectory)/example/terraform.tfvars" ]; then
+               cp $(System.DefaultWorkingDirectory)/example/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform.tfvars
+             else
+               echo "ERROR: terraform.tfvars file is missing!"
+               exit 1
+              fi
+              ls -lah $(System.DefaultWorkingDirectory)
             displayName: 'Fix: Move terraform.tfvars'
 
   - stage: Network
