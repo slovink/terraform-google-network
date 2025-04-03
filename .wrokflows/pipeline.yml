@@ -14,7 +14,7 @@ variables:
   - name: gcp_bucket
     value: slovink-hyperscaler
   - name: terraformVersion
-    value : 1.5.4
+    value : 1.9.5
   - name: authenticationFileName
     value: slovink-hyperscaler.json
   - name: projectName
@@ -46,6 +46,8 @@ stages:
               terraformVersion: latest
           - script:
               rm -rf *
+            displayName: Cleanup Workspace
+
           - task: DownloadSecureFile@1
             name: development
             displayName: 'get GCP Secrets '
@@ -53,6 +55,18 @@ stages:
               secureFile: $(authenticationFileName)
           - script: |
               cp $(development.secureFilePath) .
+            displayName: 'Copy GCP Secret'
+
+          - task: DownloadSecureFile@1
+            name: terraformvars
+            displayName: 'Download terraform.tfvars'
+            inputs:
+                secureFile: $(terraformVarsFile)
+
+          - script: |
+              mkdir -p $(System.DefaultWorkingDirectory)/example
+              cp $(terraformvars.secureFilePath) $(System.DefaultWorkingDirectory)/example/terraform.tfvars
+            displayName: 'Move terraform.tfvars to example folder'
 
   - stage: Network
     dependsOn: Prepare
