@@ -74,31 +74,31 @@ stages:
           backendGcsCredentials: $(AuthenticationFileName)
           backendGcsBucket: $(gcp_bucket)
           backendGcsPrefix: $(ProjectId)/$(PlatformName)/network.infrax.tfstate
-      - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-        displayName: 'Terraform Plan'
-        inputs:
-          command: plan
-          workingDirectory: $(System.DefaultWorkingDirectory)/example
-          # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-          providerGoogleCredentials: $(AuthenticationFileName)
-          # The default project name where resources are managed. Defining project on a resource takes precedence over this.
-          providerGoogleProject: $(ProjectName)
-          # The default region where resources are managed. Defining region on a resource takes precedence over this.
-          providerGoogleRegion: $(Region)
-          commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
+      # - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+      #   displayName: 'Terraform Plan'
+      #   inputs:
+      #     command: plan
+      #     workingDirectory: $(System.DefaultWorkingDirectory)/example
+      #     # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+      #     providerGoogleCredentials: $(AuthenticationFileName)
+      #     # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+      #     providerGoogleProject: $(ProjectName)
+      #     # The default region where resources are managed. Defining region on a resource takes precedence over this.
+      #     providerGoogleRegion: $(Region)
+      #     commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
           
-      - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-        displayName: 'terraform Apply'
-        inputs:
-          command: apply
-          workingDirectory: $(System.DefaultWorkingDirectory)/example
-          # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-          providerGoogleCredentials: $(AuthenticationFileName)
-          # The default project name where resources are managed. Defining project on a resource takes precedence over this.
-          providerGoogleProject: $(ProjectName)
-          # The default region where resources are managed. Defining region on a resource takes precedence over this.
-          providerGoogleRegion: $(Region)
-          commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
+      # - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+      #   displayName: 'terraform Apply'
+      #   inputs:
+      #     command: apply
+      #     workingDirectory: $(System.DefaultWorkingDirectory)/example
+      #     # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+      #     providerGoogleCredentials: $(AuthenticationFileName)
+      #     # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+      #     providerGoogleProject: $(ProjectName)
+      #     # The default region where resources are managed. Defining region on a resource takes precedence over this.
+      #     providerGoogleRegion: $(Region)
+      #     commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
 
       - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
         displayName: 'Terraform Destroy'
