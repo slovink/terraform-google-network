@@ -5,6 +5,11 @@ parameters:
     values:
       - "Azure Pipelines"
       - "Slovink-Selfhosted-Agent"
+  - name: destroy
+    type: string
+    values:
+      - "true"
+      - "false"
 
 trigger:
 - main
@@ -94,3 +99,42 @@ stages:
           # The default region where resources are managed. Defining region on a resource takes precedence over this.
           providerGoogleRegion: $(Region)
           commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
+
+
+      - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+        displayName: 'terraform Apply'
+        inputs:
+          command: apply
+          workingDirectory: $(System.DefaultWorkingDirectory)/example
+          # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+          providerGoogleCredentials: $(AuthenticationFileName)
+          # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+          providerGoogleProject: $(ProjectName)
+          # The default region where resources are managed. Defining region on a resource takes precedence over this.
+          providerGoogleRegion: $(Region)
+          commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
+
+
+    - job: DestroyNetwork
+      steps:   
+      - task: TerraformCLI@0
+        displayName: Terraform Initialize
+        inputs:
+          command: init
+          workingDirectory: $(System.DefaultWorkingDirectory)/example
+          backendType: gcs
+          backendGcsCredentials: $(AuthenticationFileName)
+          backendGcsBucket: $(gcp_bucket)
+          backendGcsPrefix: $(ProjectId)/$(PlatformName)/kubernetes.infrax.tfstate
+      - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+        displayName: 'Terraform destroy'
+        inputs:
+          command: destroy
+          workingDirectory: $(System.DefaultWorkingDirectory)/example
+          # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+          providerGoogleCredentials: $(AuthenticationFileName)
+          # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+          providerGoogleProject: $(ProjectName)
+          # The default region where resources are managed. Defining region on a resource takes precedence over this.
+          providerGoogleRegion: $(Region)
+          commandOptions: '-var "platformName=$(platformName)" -var "projectId=$(ProjectId)"  -var "projectName=$(projectName)" -var "region=${Region)"'
