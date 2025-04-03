@@ -9,6 +9,9 @@ parameters:
 trigger:
 - main
 
+pr:
+- main
+
 variables:
 - name: gcp_bucket
   value: slovink-hyperscaler
