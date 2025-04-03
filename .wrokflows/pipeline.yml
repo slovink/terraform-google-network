@@ -14,7 +14,7 @@ variables:
   - name: gcp_bucket
     value: slovink-hyperscaler
   - name: terraformVersion
-    value : 1.9.5
+    value : 1.5.4
   - name: authenticationFileName
     value: slovink-hyperscaler.json
   - name: projectName
@@ -44,7 +44,6 @@ stages:
             displayName: install terraform
             inputs:
               terraformVersion: latest
-
           - script:
               rm -rf *
           - task: DownloadSecureFile@1
@@ -67,7 +66,7 @@ stages:
               command: init
               workingDirectory: $(System.DefaultWorkingDirectory)/example
               backendType: gcs
-              backendGcsCredentials: $(authenticationFileName)
+              backendGcsCredentials: $(AuthenticationFileName)
               backendGcsBucket: $(gcp_bucket)
               backendGcsPrefix: $(ProjectId)/$(PlatformName)/network.infrax.tfstate
           - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
@@ -76,7 +75,7 @@ stages:
               command: plan
               workingDirectory: $(System.DefaultWorkingDirectory)/example
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-              providerGoogleCredentials: $(authenticationFileName)
+              providerGoogleCredentials: $(AuthenticationFileName)
               # The default project name where resources are managed. Defining project on a resource takes precedence over this.
               providerGoogleProject: $(ProjectName)
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
@@ -88,7 +87,7 @@ stages:
               command: apply
               workingDirectory: $(System.DefaultWorkingDirectory)/example
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-              providerGoogleCredentials: $(authenticationFileName)
+              providerGoogleCredentials: $(AuthenticationFileName)
               # The default project name where resources are managed. Defining project on a resource takes precedence over this.
               providerGoogleProject: $(ProjectName)
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
