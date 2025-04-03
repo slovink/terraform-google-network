@@ -4,19 +4,19 @@
 
 
 # platformName= "virginia"
-projectId= "slovink-hyperscaler"
-projectName= "Slovink Hyperscaler"
-region= "us-east1"
-# zone= "us-east1"
-environment= "prod"
+# projectId= "slovink-hyperscaler"
+# projectName= "Slovink Hyperscaler"
+# region= "us-east1"
+# # zone= "us-east1"
+# environment= "prod"
 
 
 ############################################
 #              Google Network              #
 ############################################
 
-routing_mode= "REGIONAL"
-mtu= "1460"
+# routing_mode= "REGIONAL"
+# mtu= "1460"
 
 
 
