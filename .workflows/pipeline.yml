@@ -36,8 +36,8 @@ variables:
 - name: agentPoolName
   value:  ${{ parameters.agentPool }}
 - name: destroy
-  value: "false"
-  # value: "true"
+  # value: "false"
+  value: "true"
 pool:
   name: $(agentPoolName)
 
