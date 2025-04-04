@@ -6,6 +6,10 @@ parameters:
     values:
       - "Azure Pipelines"
       - "Slovink-Selfhosted-Agent"
+  - name: Destroy
+    displayName: "Run Terraform Destroy?"
+    type: boolean
+    default: false
 
 trigger:
   - main
@@ -98,3 +102,18 @@ stages:
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: $(Region)
               commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
+          - stage: Destroy
+            dependsOn: Network
+            displayName: Destroy Infrastructure
+            jobs:
+              - job: Destroy
+                steps:
+                  - task: TerraformCLI@0
+                    displayName: Terraform Destroy
+                    inputs:
+                      command: destroy
+                      workingDirectory: $(System.DefaultWorkingDirectory)/example
+                      providerGoogleCredentials: $(AuthenticationFileName)
+                      providerGoogleProject: $(ProjectName)
+                      providerGoogleRegion: $(Region)
+                      commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars" -auto-approve'
