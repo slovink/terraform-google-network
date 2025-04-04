@@ -12,7 +12,7 @@ parameters:
     default: false
 
 trigger:
-  - main
+  - none
 
 variables:
   - name: gcp_bucket
