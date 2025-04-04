@@ -115,6 +115,10 @@ stages:
         displayName: 'Terraform Destroy'
         inputs:
           command: destroy
+          backendType: gcs
+          backendGcsCredentials: $(AuthenticationFileName)
+          backendGcsBucket: $(gcp_bucket)
+          backendGcsPrefix: $(ProjectId)/$(PlatformName)/network.infrax.tfstate
           workingDirectory: $(System.DefaultWorkingDirectory)/example
           providerGoogleCredentials: $(AuthenticationFileName)
           providerGoogleProject: $(ProjectName)
