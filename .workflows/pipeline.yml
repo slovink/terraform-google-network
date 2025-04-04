@@ -101,6 +101,7 @@ stages:
           commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
 
       - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+        condition: and(succeeded(), eq(parameters['destroy'], 'false'))
         displayName: 'Terraform Destroy'
         inputs:
           command: destroy
