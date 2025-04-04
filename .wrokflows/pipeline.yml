@@ -112,7 +112,7 @@ stages:
               commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
   - stage: Destroy
     condition: and(always(), eq(${{ parameters.Destroy }}, true))
-    dependsOn: Prepare
+    dependsOn: network
     displayName: Destroy Infrastructure
     jobs:
       - job: DestroyNetwork
@@ -122,7 +122,7 @@ stages:
             displayName: Terraform Initialize
             inputs:
               command: init
-              workingDirectory: $(System.DefaultWorkingDirectory)/network
+              workingDirectory: $(System.DefaultWorkingDirectory)/example
               backendType: gcs
               backendGcsCredentials: $(AuthenticationFileName)
               backendGcsBucket: $(gcp_bucket)
@@ -131,7 +131,7 @@ stages:
             displayName: 'Terraform Destroy'
             inputs:
               command: destroy
-              workingDirectory: $(System.DefaultWorkingDirectory)/network
+              workingDirectory: $(System.DefaultWorkingDirectory)/example
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
               providerGoogleCredentials: $(AuthenticationFileName)
               # The default project name where resources are managed. Defining project on a resource takes precedence over this.
