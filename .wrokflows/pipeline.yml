@@ -85,7 +85,7 @@ stages:
               providerGoogleProject: $(ProjectName)
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: $(Region)
-              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/example/terraform.tfvars"'
+              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
           - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
             displayName: 'terraform Apply'
             inputs:
@@ -97,4 +97,4 @@ stages:
               providerGoogleProject: $(ProjectName)
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: $(Region)
-              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/example/terraform.tfvars"'
+              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
