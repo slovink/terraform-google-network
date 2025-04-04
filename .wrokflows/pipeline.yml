@@ -6,13 +6,13 @@ parameters:
     values:
       - "Azure Pipelines"
       - "Slovink-Selfhosted-Agent"
-  - name: Destroy
-    displayName: "Run Terraform Destroy?"
-    type: boolean
-    default: false
-
+  - name: destroy
+    type: string
+    values:
+        - "true"
+        - "false"
 trigger:
-  - none
+  - main
 
 variables:
   - name: gcp_bucket
@@ -104,6 +104,7 @@ stages:
               commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
           - stage: Destroy
             dependsOn: Network
+            condition: eq('${{ parameters.Destroy }}', true)
             displayName: Destroy Infrastructure
             jobs:
               - job: Destroy
