@@ -1,3 +1,4 @@
+
 parameters:
   - name: agentPool
     type: string
@@ -6,8 +7,10 @@ parameters:
       - "Azure Pipelines"
       - "Slovink-Selfhosted-Agent"
   - name: destroy
-    type: boolean
-    default: false
+    type: string
+    values:
+      - "true"
+      - "false"
 
 trigger:
   - main
@@ -32,35 +35,36 @@ variables:
   - name: zone
     value: "us-east1-b"
   - name: agentPoolName
-    value: ${{ parameters.agentPool }}
-  - name: destroy_flag
+    value:  ${{ parameters.agentPool }}
+  - name: destroy
     value: ${{ parameters.destroy }}
-
 pool:
   name: $(agentPoolName)
 
-  stages:
-    - stage: Prepare
-      displayName: Initialization
-      jobs:
-        - job: prepare
-          steps:
-            - task: TerraformInstaller@1
-              displayName: install terraform
-              inputs:
-                terraformVersion: latest
-            - script: rm -rf *
-            - task: DownloadSecureFile@1
-              name: development
-              displayName: 'Get GCP Secrets'
-              inputs:
-                secureFile: $(authenticationFileName)
-            - script: cp $(development.secureFilePath) .
+stages:
+  - stage: Prepare
+    displayName: Initialization
+    jobs:
+      - job: prepare
+        steps:
+          - task: TerraformInstaller@1
+            displayName: install terraform
+            inputs:
+              terraformVersion: latest
+          - script:
+              rm -rf *
+          - task: DownloadSecureFile@1
+            name: development
+            displayName: 'get GCP Secrets '
+            inputs:
+              secureFile: $(authenticationFileName)
+          - script: |
+              cp $(development.secureFilePath) .
 
-    - stage: Network
-      dependsOn: Prepare
-      displayName: Network
-      jobs:
+  - stage: Network
+    dependsOn: Prepare
+    displayName: Network
+    jobs:
       - job: Network
         steps:
           - task: TerraformCLI@0
@@ -72,52 +76,53 @@ pool:
               backendGcsCredentials: $(AuthenticationFileName)
               backendGcsBucket: $(gcp_bucket)
               backendGcsPrefix: $(ProjectId)/$(PlatformName)/network.infrax.tfstate
-
-          - task: TerraformCLI@0
-            displayName: 'Terraform Apply'
-            condition: eq(variables['destroy_flag'], 'false')
+          - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+            displayName: 'Terraform Plan'
+            inputs:
+              command: plan
+              workingDirectory: $(System.DefaultWorkingDirectory)/example
+              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+              providerGoogleCredentials: $(AuthenticationFileName)
+              # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+              providerGoogleProject: $(ProjectName)
+              # The default region where resources are managed. Defining region on a resource takes precedence over this.
+              providerGoogleRegion: $(Region)
+              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
+          - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+            displayName: 'terraform Apply'
             inputs:
               command: apply
               workingDirectory: $(System.DefaultWorkingDirectory)/example
+              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
               providerGoogleCredentials: $(AuthenticationFileName)
+              # The default project name where resources are managed. Defining project on a resource takes precedence over this.
               providerGoogleProject: $(ProjectName)
+              # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: $(Region)
               commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
 
+      - job: DestroyNetwork
+        steps:
           - task: TerraformCLI@0
-            displayName: 'Terraform Destroy'
-            condition: eq(variables['destroy_flag'], 'true')
+            displayName: Terraform Initialize
+            inputs:
+              command: init
+              workingDirectory: $(System.DefaultWorkingDirectory)/example
+              backendType: gcs
+              backendGcsCredentials: $(AuthenticationFileName)
+              backendGcsBucket: $(gcp_bucket)
+              backendGcsPrefix: $(ProjectId)/$(PlatformName)/kubernetes.infrax.tfstate
+
+          - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+            displayName: 'Terraform destroy'
             inputs:
               command: destroy
-              workingDirectory: $(System.DefaultWorkingDirectory)/example
+              condition: eq(variables['destroy'], 'true')
+              workingDirectory: $(System.DefaultWorkingDirectory)/exa
+              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
               providerGoogleCredentials: $(AuthenticationFileName)
+              # The default project name where resources are managed. Defining project on a resource takes precedence over this.
               providerGoogleProject: $(ProjectName)
+              # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: $(Region)
-              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars" -auto-approve'
-
-    - stage: DestroyNetwork
-      dependsOn: Network
-      condition: eq(variables['destroy_flag'], 'true')
-      displayName: Destroy Network Resources
-      jobs:
-        - job: DestroyNetwork
-          steps:
-            - task: TerraformCLI@0
-              displayName: Terraform Initialize
-              inputs:
-                command: init
-                workingDirectory: $(System.DefaultWorkingDirectory)/example
-                backendType: gcs
-                backendGcsCredentials: $(AuthenticationFileName)
-                backendGcsBucket: $(gcp_bucket)
-                backendGcsPrefix: $(ProjectId)/$(PlatformName)/kubernetes.infrax.tfstate
-
-            - task: TerraformCLI@0
-              displayName: 'Terraform Destroy Network'
-              inputs:
-                command: destroy
-                workingDirectory: $(System.DefaultWorkingDirectory)/example
-                providerGoogleCredentials: $(AuthenticationFileName)
-                providerGoogleProject: $(ProjectName)
-                providerGoogleRegion: $(Region)
-                commandOptions: '-var "platformName=$(platformName)" -var "projectId=$(projectId)" -var "projectName=$(projectName)" -var "region=$(Region)"'
+              commandOptions: '-var "platformName=$(platformName)" -var "projectId=$(ProjectId)"  -var "projectName=$(projectName)" -var "region=${Region)"'
