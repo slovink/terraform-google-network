@@ -35,6 +35,9 @@ variables:
   value: "us-east1-b"
 - name: agentPoolName
   value:  ${{ parameters.agentPool }}
+- name: destroy
+  value: "false"
+  # value: "true"
 pool:
   name: $(agentPoolName)
 
@@ -101,7 +104,7 @@ stages:
           commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
 
       - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-        condition: and(succeeded(), eq(parameters['destroy'], 'true'))
+        condition: eq(variables['destroy'], 'true')
         displayName: 'Terraform Destroy'
         inputs:
           command: destroy
