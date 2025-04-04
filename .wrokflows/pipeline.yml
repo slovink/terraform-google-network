@@ -16,7 +16,7 @@ variables:
   - name: gcp_bucket
     value: slovink-hyperscaler
   - name: terraformVersion
-    value : 1.5.4
+    value : 1.9.5
   - name: authenticationFileName
     value: slovink-hyperscaler.json
   - name: projectName
@@ -39,28 +39,28 @@ variables:
 pool:
   name: $(agentPoolName)
 
-stages:
-  - stage: Prepare
-    displayName: Initialization
-    jobs:
-      - job: prepare
-        steps:
-          - task: TerraformInstaller@1
-            displayName: install terraform
-            inputs:
-              terraformVersion: latest
-          - script: rm -rf *
-          - task: DownloadSecureFile@1
-            name: development
-            displayName: 'Get GCP Secrets'
-            inputs:
-              secureFile: $(authenticationFileName)
-          - script: cp $(development.secureFilePath) .
+  stages:
+    - stage: Prepare
+      displayName: Initialization
+      jobs:
+        - job: prepare
+          steps:
+            - task: TerraformInstaller@1
+              displayName: install terraform
+              inputs:
+                terraformVersion: latest
+            - script: rm -rf *
+            - task: DownloadSecureFile@1
+              name: development
+              displayName: 'Get GCP Secrets'
+              inputs:
+                secureFile: $(authenticationFileName)
+            - script: cp $(development.secureFilePath) .
 
-  - stage: Network
-    dependsOn: Prepare
-    displayName: Network
-    jobs:
+    - stage: Network
+      dependsOn: Prepare
+      displayName: Network
+      jobs:
       - job: Network
         steps:
           - task: TerraformCLI@0
@@ -95,152 +95,29 @@ stages:
               providerGoogleRegion: $(Region)
               commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars" -auto-approve'
 
-  - stage: DestroyNetwork
-    dependsOn: Network
-    condition: eq(variables['destroy_flag'], 'true')
-    displayName: Destroy Network Resources
-    jobs:
-      - job: DestroyNetwork
-        steps:
-          - task: TerraformCLI@0
-            displayName: Terraform Initialize
-            inputs:
-              command: init
-              workingDirectory: $(System.DefaultWorkingDirectory)/example
-              backendType: gcs
-              backendGcsCredentials: $(AuthenticationFileName)
-              backendGcsBucket: $(gcp_bucket)
-              backendGcsPrefix: $(ProjectId)/$(PlatformName)/kubernetes.infrax.tfstate
+    - stage: DestroyNetwork
+      dependsOn: Network
+      condition: eq(variables['destroy_flag'], 'true')
+      displayName: Destroy Network Resources
+      jobs:
+        - job: DestroyNetwork
+          steps:
+            - task: TerraformCLI@0
+              displayName: Terraform Initialize
+              inputs:
+                command: init
+                workingDirectory: $(System.DefaultWorkingDirectory)/example
+                backendType: gcs
+                backendGcsCredentials: $(AuthenticationFileName)
+                backendGcsBucket: $(gcp_bucket)
+                backendGcsPrefix: $(ProjectId)/$(PlatformName)/kubernetes.infrax.tfstate
 
-          - task: TerraformCLI@0parameters:
-  - name: agentPool
-    type: string
-    default: Azure Pipelines
-    values:
-      - "Azure Pipelines"
-      - "Slovink-Selfhosted-Agent"
-  - name: destroy
-    type: boolean
-    default: false
-
-trigger:
-  - main
-
-variables:
-  - name: gcp_bucket
-    value: slovink-hyperscaler
-  - name: terraformVersion
-    value : 1.5.4
-  - name: authenticationFileName
-    value: slovink-hyperscaler.json
-  - name: projectName
-    value: "Slovink hyperscaler"
-  - name: projectId
-    value: "slovink-hyperscaler"
-  - name: platformName
-    value: "google"
-  - name: environment
-    value: "development"
-  - name: region
-    value: "us-east1"
-  - name: zone
-    value: "us-east1-b"
-  - name: agentPoolName
-    value: ${{ parameters.agentPool }}
-  - name: destroy_flag
-    value: ${{ parameters.destroy }}
-
-pool:
-  name: $(agentPoolName)
-
-stages:
-  - stage: Prepare
-    displayName: Initialization
-    jobs:
-      - job: prepare
-        steps:
-          - task: TerraformInstaller@1
-            displayName: install terraform
-            inputs:
-              terraformVersion: latest
-          - script: rm -rf *
-          - task: DownloadSecureFile@1
-            name: development
-            displayName: 'Get GCP Secrets'
-            inputs:
-              secureFile: $(authenticationFileName)
-          - script: cp $(development.secureFilePath) .
-
-  - stage: Network
-    dependsOn: Prepare
-    displayName: Network
-    jobs:
-      - job: Network
-        steps:
-          - task: TerraformCLI@0
-            displayName: Terraform Initialize
-            inputs:
-              command: init
-              workingDirectory: $(System.DefaultWorkingDirectory)/example
-              backendType: gcs
-              backendGcsCredentials: $(AuthenticationFileName)
-              backendGcsBucket: $(gcp_bucket)
-              backendGcsPrefix: $(ProjectId)/$(PlatformName)/network.infrax.tfstate
-
-          - task: TerraformCLI@0
-            displayName: 'Terraform Apply'
-            condition: eq(variables['destroy_flag'], 'false')
-            inputs:
-              command: apply
-              workingDirectory: $(System.DefaultWorkingDirectory)/example
-              providerGoogleCredentials: $(AuthenticationFileName)
-              providerGoogleProject: $(ProjectName)
-              providerGoogleRegion: $(Region)
-              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
-
-          - task: TerraformCLI@0
-            displayName: 'Terraform Destroy'
-            condition: eq(variables['destroy_flag'], 'true')
-            inputs:
-              command: destroy
-              workingDirectory: $(System.DefaultWorkingDirectory)/example
-              providerGoogleCredentials: $(AuthenticationFileName)
-              providerGoogleProject: $(ProjectName)
-              providerGoogleRegion: $(Region)
-              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars" -auto-approve'
-
-  - stage: DestroyNetwork
-    dependsOn: Network
-    condition: eq(variables['destroy_flag'], 'true')
-    displayName: Destroy Network Resources
-    jobs:
-      - job: DestroyNetwork
-        steps:
-          - task: TerraformCLI@0
-            displayName: Terraform Initialize
-            inputs:
-              command: init
-              workingDirectory: $(System.DefaultWorkingDirectory)/example
-              backendType: gcs
-              backendGcsCredentials: $(AuthenticationFileName)
-              backendGcsBucket: $(gcp_bucket)
-              backendGcsPrefix: $(ProjectId)/$(PlatformName)/kubernetes.infrax.tfstate
-
-          - task: TerraformCLI@0
-            displayName: 'Terraform Destroy Network'
-            inputs:
-              command: destroy
-              workingDirectory: $(System.DefaultWorkingDirectory)/example
-              providerGoogleCredentials: $(AuthenticationFileName)
-              providerGoogleProject: $(ProjectName)
-              providerGoogleRegion: $(Region)
-              commandOptions: '-var "platformName=$(platformName)" -var "projectId=$(projectId)" -var "projectName=$(projectName)" -var "region=$(Region)"'
-
-            displayName: 'Terraform Destroy Network'
-            inputs:
-              command: destroy
-              workingDirectory: $(System.DefaultWorkingDirectory)/example
-              providerGoogleCredentials: $(AuthenticationFileName)
-              providerGoogleProject: $(ProjectName)
-              providerGoogleRegion: $(Region)
-              commandOptions: '-var "platformName=$(platformName)" -var "projectId=$(projectId)" -var "projectName=$(projectName)" -var "region=$(Region)"'
+            - task: TerraformCLI@0
+              displayName: 'Terraform Destroy Network'
+              inputs:
+                command: destroy
+                workingDirectory: $(System.DefaultWorkingDirectory)/example
+                providerGoogleCredentials: $(AuthenticationFileName)
+                providerGoogleProject: $(ProjectName)
+                providerGoogleRegion: $(Region)
+                commandOptions: '-var "platformName=$(platformName)" -var "projectId=$(projectId)" -var "projectName=$(projectName)" -var "region=$(Region)"'
