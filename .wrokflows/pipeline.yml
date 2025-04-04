@@ -102,19 +102,19 @@ stages:
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: $(Region)
               commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
-          - stage: Destroy
-            dependsOn: Network
-            condition: eq('${{ parameters.Destroy }}', true)
-            displayName: Destroy Infrastructure
-            jobs:
-              - job: Destroy
-                steps:
-                  - task: TerraformCLI@0
-                    displayName: Terraform Destroy
-                    inputs:
-                      command: destroy
-                      workingDirectory: $(System.DefaultWorkingDirectory)/example
-                      providerGoogleCredentials: $(AuthenticationFileName)
-                      providerGoogleProject: $(ProjectName)
-                      providerGoogleRegion: $(Region)
-                      commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars" -auto-approve'
+  - stage: Destroy
+    dependsOn: Network
+    condition: eq('${{ parameters.Destroy }}', true)
+    displayName: Destroy Infrastructure
+    jobs:
+      - job: Destroy
+        steps:
+          - task: TerraformCLI@0
+            displayName: Terraform Destroy
+            inputs:
+              command: destroy
+              workingDirectory: $(System.DefaultWorkingDirectory)/example
+              providerGoogleCredentials: $(AuthenticationFileName)
+              providerGoogleProject: $(ProjectName)
+              providerGoogleRegion: $(Region)
+              commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars" -auto-approve'
