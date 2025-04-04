@@ -97,7 +97,7 @@ stages:
           commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
           
       - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-        condition: eq(variables['apply'], 'true')
+        condition: eq(variables['apply_flag'], 'true')
         displayName: 'terraform Apply'
         inputs:
           command: apply
