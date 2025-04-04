@@ -10,6 +10,11 @@ parameters:
     values:
       - "true"
       - "false"
+  - name: apply_flag
+    type: string
+    values:
+      - "true"
+      - "false"
 
 trigger:
 - main
@@ -37,6 +42,8 @@ variables:
   value:  ${{ parameters.agentPool }}
 - name: destroy
   value: ${{ parameters.destroy }}
+- name: apply_flag
+  value: ${{ parameters.apply_flag }}
 pool:
   name: $(agentPoolName)
 
@@ -90,6 +97,7 @@ stages:
           commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/terraform.tfvars"'
           
       - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+        condition: eq(variables['apply'], 'true')
         displayName: 'terraform Apply'
         inputs:
           command: apply
