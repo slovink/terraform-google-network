@@ -1,3 +1,4 @@
+
 name: pre-commit
 
 on:
@@ -10,15 +11,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      # Install Terraform
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: '1.9.5' # specify your desired Terraform version here
-
-      # Install Python (if you need it for other hooks)
       - uses: actions/setup-python@v3
-
-      # Run pre-commit hooks
       - uses: pre-commit/action@v3.0.0
