@@ -4,7 +4,6 @@ provider "google" {
   zone    = "asia-northeast1-a"
 }
 
-
 module "vpc" {
   source                                    = "../."
   name                                      = "app"
