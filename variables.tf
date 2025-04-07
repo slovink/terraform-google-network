@@ -1,3 +1,4 @@
+
 variable "name" {
   type        = string
   default     = ""
@@ -18,8 +19,14 @@ variable "label_order" {
 
 variable "managedby" {
   type        = string
-  default     = "slovink"
-  description = "ManagedBy, eg 'slovink'."
+  default     = "contact@slovink.com"
+  description = "ManagedBy, eg 'contact@slovink.com'"
+}
+
+variable "extra_tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
 }
 
 variable "repository" {
