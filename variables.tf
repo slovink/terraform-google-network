@@ -94,3 +94,20 @@ variable "network_firewall_policy_enforcement_order" {
   default     = "AFTER_CLASSIC_FIREWALL"
   description = "(Optional) Set the order that Firewall Rules and Firewall Policies are evaluated. Default value is AFTER_CLASSIC_FIREWALL. Possible values are: BEFORE_CLASSIC_FIREWALL, AFTER_CLASSIC_FIREWALL"
 }
+variable "region" {
+  description = "GCP region"
+  type        = string
+  default     = "us-east1"
+}
+
+variable "platformName" {
+  description = "Platform name, e.g., google"
+  type        = string
+  default     = "google"
+}
+
+variable "projectId" {
+  description = "GCP project ID"
+  type        = string
+  default     = "slovink-hyperscaler"
+}
