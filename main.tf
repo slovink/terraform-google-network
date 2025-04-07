@@ -26,9 +26,3 @@ resource "google_compute_network" "vpc" {
   delete_default_routes_on_create           = var.delete_default_routes_on_create
   network_firewall_policy_enforcement_order = var.network_firewall_policy_enforcement_order
 }
-module "example" {
-  source     = "../modules/example"
-  project_id = var.projectId
-  region     = var.region
-  platform   = var.platformName
-}
