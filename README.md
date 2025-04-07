@@ -92,6 +92,7 @@ Replace **MIT** and **slovink** with the appropriate license and your informatio
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_example"></a> [example](#module\_example) | ../modules/example | n/a |
 | <a name="module_labels"></a> [labels](#module\_labels) | git::https://github.com/slovink/terraform-google-labels.git | add-precommit-136 |
 
 ## Resources
