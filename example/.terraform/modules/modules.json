@@ -1,1 +1,0 @@
-{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"vpc","Source":"./..","Dir":".."},{"Key":"vpc.labels","Source":"git::https://github.com/slovink/terraform-google-labels.git?ref=add-precommit-136","Dir":".terraform/modules/vpc.labels"}]}
