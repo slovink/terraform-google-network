@@ -15,7 +15,7 @@ output "self_link" {
 }
 
 output "numeric_id" {
-  value       = join("", google_compute_network.vpc[*].numeric_id)
+  value       = join("", google_compute_network.vpc[*].id)
   description = "Generated unique numeric identifier."
 }
 

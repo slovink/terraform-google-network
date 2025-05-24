@@ -16,7 +16,7 @@ module "labels" {
 resource "google_compute_network" "vpc" {
   count                                     = var.network_enabled && var.module_enabled ? 1 : 0
   project                                   = data.google_client_config.current.project
-  name                                      = format("%s-vpc", module.labels.id)
+  name                                      = format("%s-vpc", module.labels.id != "" ? module.labels.id : "default")
   description                               = var.description
   routing_mode                              = var.routing_mode
   mtu                                       = var.mtu
