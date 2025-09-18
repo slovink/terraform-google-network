@@ -80,13 +80,13 @@ Replace **MIT** and **slovink** with the appropriate license and your informatio
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14, < 2.0 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.0, < 6.0 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | >= 3.50, < 5.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | >= 4.0, < 6.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | >= 3.50, < 5.0 |
 
 ## Modules
 
