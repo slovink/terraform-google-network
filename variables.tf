@@ -59,6 +59,13 @@ variable "description" {
   description = "(Optional) An optional description of the VPC. The resource must be recreated to modify this field.Default is ''."
 }
 
+variable "module_depends_on" {
+  type        = any
+  default     = []
+  description = "(Optional) A list of external resources the module depends_on. Default is '[]'."
+
+}
+
 variable "routing_mode" {
   type        = string
   default     = "REGIONAL"
