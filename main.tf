@@ -25,4 +25,5 @@ resource "google_compute_network" "vpc" {
   internal_ipv6_range                       = var.internal_ipv6_range
   delete_default_routes_on_create           = var.delete_default_routes_on_create
   network_firewall_policy_enforcement_order = var.network_firewall_policy_enforcement_order
+  depends_on                                = [var.module_depends_on]
 }
